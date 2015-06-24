@@ -29,18 +29,17 @@ fragment float4 horizontal_box_blur_fragment(VertexOut                        ve
 															sampler                          sampler2D [[ sampler(0) ]],
 															const device DownsampleSettings* settings  [[ buffer(0) ]])
 {
-//	int blurRadius = pow(settings->sampleLevel, 2.0f);
-//	int blurArea = (2 * blurRadius + 1);
-//	
-//	float4 outColor = float4(0.0);
-//	for (int i = -blurRadius; i <= blurRadius; i++)
-//	{
-//		float4 inColor = texture.sample(sampler2D, vert.texCoords, int2(0 + i, 0));
-//		outColor += inColor;
-//	}
-//	outColor /= blurArea;
-//	return outColor;
-	return texture.sample(sampler2D, vert.texCoords);
+	int blurRadius = pow(settings->sampleLevel, 2.0f);
+	int blurArea = (2 * blurRadius + 1);
+	
+	float4 outColor = float4(0.0);
+	for (int i = -blurRadius; i <= blurRadius; i++)
+	{
+		float4 inColor = texture.sample(sampler2D, vert.texCoords, int2(0 + i, 0));
+		outColor += inColor;
+	}
+	outColor /= blurArea;
+	return outColor;
 }
 
 fragment float4 vertical_box_blur_fragment(VertexOut                        vert      [[ stage_in ]],
@@ -48,17 +47,15 @@ fragment float4 vertical_box_blur_fragment(VertexOut                        vert
 														 sampler                          sampler2D [[ sampler(0) ]],
 														 const device DownsampleSettings* settings  [[ buffer(0) ]])
 {
-//	int blurRadius = pow(settings->sampleLevel, 2.0f);
-//	int blurArea = (2 * blurRadius + 1);
-//	
-//	float4 outColor = float4(0.0);
-//	for (int i = -blurRadius; i <= blurRadius; i++)
-//	{
-//		float4 inColor = texture.sample(sampler2D, vert.texCoords, int2(0, 0 + i));
-//		outColor += inColor;
-//	}
-//	outColor /= blurArea;
-//	return outColor;
+	int blurRadius = pow(settings->sampleLevel, 2.0f);
+	int blurArea = (2 * blurRadius + 1);
 	
-	return texture.sample(sampler2D, vert.texCoords);
+	float4 outColor = float4(0.0);
+	for (int i = -blurRadius; i <= blurRadius; i++)
+	{
+		float4 inColor = texture.sample(sampler2D, vert.texCoords, int2(0, 0 + i));
+		outColor += inColor;
+	}
+	outColor /= blurArea;
+	return outColor;
 }
