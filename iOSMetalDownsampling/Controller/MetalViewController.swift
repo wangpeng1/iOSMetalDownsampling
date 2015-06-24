@@ -15,7 +15,7 @@ class MetalViewController: UIViewController {
 		get {
 			// NOTE: In the current setup, the view needs to also be set
 			//   as an object of MirrorSceneView from interface builder!
-			return self.view as MetalDemoView
+			return self.view as! MetalDemoView
 		}
 	}
 	@IBOutlet weak var detailLevelSlider: UISlider!

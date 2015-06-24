@@ -51,7 +51,7 @@ class TextureUtility: NSObject {
 		let size = MTLSizeMake(texture.width, texture.height, texture.depth)
 		let format = texture.pixelFormat
 		let desc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(format, width: Int(texture.width), height: Int(texture.height), mipmapped: true)
-		var tempTexture = device.newTextureWithDescriptor(desc)
+		let tempTexture = device.newTextureWithDescriptor(desc)
 		
 		// Copy from texture to temporary texture.
 		commandEncoder.copyFromTexture(texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: origin, sourceSize: size, toTexture: tempTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: origin)
@@ -78,7 +78,7 @@ class TextureUtility: NSObject {
 		let size = MTLSizeMake(texture.width, texture.height, texture.depth)
 		let format = texture.pixelFormat
 		let desc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(format, width: Int(texture.width), height: Int(texture.height), mipmapped: true)
-		var tempTexture = device.newTextureWithDescriptor(desc)
+		let tempTexture = device.newTextureWithDescriptor(desc)
 		
 		// Copy from texture to temporary texture.
 		commandEncoder.copyFromTexture(texture, sourceSlice: 0, sourceLevel: 0, sourceOrigin: origin, sourceSize: size, toTexture: tempTexture, destinationSlice: 0, destinationLevel: 0, destinationOrigin: origin)

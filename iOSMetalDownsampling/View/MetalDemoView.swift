@@ -94,7 +94,7 @@ class MetalDemoView: MetalView {
 		imagePlane.samplerState = _generateSamplerStateForDevice(rendererDevice, mipped: true, minMagLinear: false)
 		
 		// NOTE: memory jump here.
-		var texture = METLTexture(resourceName: "input", ext: "jpg")
+		let texture = METLTexture(resourceName: "input", ext: "jpg")
 		texture.format = MTLPixelFormat.BGRA8Unorm
 		texture.finalize(renderer.device, flip: false)
 		imagePlane.texture = texture.texture
@@ -103,13 +103,13 @@ class MetalDemoView: MetalView {
 		})
 		
 		
-		var sourceAspect: CGFloat = CGFloat(texture.texture.height) / CGFloat(texture.texture.width)
+		let sourceAspect: CGFloat = CGFloat(texture.texture.height) / CGFloat(texture.texture.width)
 		imagePlane.scaleX = 1.0
 		imagePlane.scaleY = Float(1.0 * sourceAspect)
 	}
 	
 	private func _generateSamplerStateForDevice(device: MTLDevice, mipped: Bool, minMagLinear: Bool) -> MTLSamplerState {
-		var pSamplerDescriptor:MTLSamplerDescriptor? = MTLSamplerDescriptor();
+		let pSamplerDescriptor:MTLSamplerDescriptor? = MTLSamplerDescriptor();
 		
 		if let sampler = pSamplerDescriptor
 		{
@@ -140,15 +140,15 @@ class MetalDemoView: MetalView {
 		else
 		{
 			// TODO: Make all error handling better.
-			println(">> ERROR: Failed creating a sampler descriptor!")
+			print(">> ERROR: Failed creating a sampler descriptor!")
 		}
 		
 		return device.newSamplerStateWithDescriptor(pSamplerDescriptor!)
 	}
 	
 	private func _buildDepthBuffer() {
-		var drawableSize = metalLayer.drawableSize
-		var depthTextureDesc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(MTLPixelFormat.Depth32Float, width:Int(drawableSize.width), height:Int(drawableSize.height), mipmapped:true)
+		let drawableSize = metalLayer.drawableSize
+		let depthTextureDesc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(MTLPixelFormat.Depth32Float, width:Int(drawableSize.width), height:Int(drawableSize.height), mipmapped:true)
 		
 		depthTexture = rendererDevice.newTextureWithDescriptor(depthTextureDesc)
 	}
@@ -195,7 +195,7 @@ class MetalDemoView: MetalView {
 		let compositeVert = defaultLibrary!.newFunctionWithName("composite_vertex")
 		let compositeFrag = defaultLibrary!.newFunctionWithName("composite_fragment")
 		
-		var vertexDescriptor = MTLVertexDescriptor()
+		let vertexDescriptor = MTLVertexDescriptor()
 		vertexDescriptor.attributes[0].bufferIndex = 0
 		vertexDescriptor.attributes[0].offset = 0
 		vertexDescriptor.attributes[0].format = MTLVertexFormat.Float4
@@ -208,47 +208,54 @@ class MetalDemoView: MetalView {
 		
 		// Setup pipeline
 		let desc = MTLRenderPipelineDescriptor()
-		var pipelineError : NSError?
 		
 		desc.label = "Horizontal Blur"
-		desc.vertexFunction = basicVert
+		desc.vertexFunction = basicVert!
 		desc.fragmentFunction = horizontalBlurFrag
 		desc.colorAttachments[0].pixelFormat = .BGRA8Unorm
-		horizontalBlurPipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc, error: &pipelineError)
-		if !(horizontalBlurPipeline != nil) {
-			println("Failed to create pipeline state, error \(pipelineError)")
+		do {
+			try horizontalBlurPipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc)
+		} catch _ {
+			// TODO: Do more here.
+			print("Failed to create pipeline state")
 		}
 		
 		desc.label = "Vertical Blur"
-		desc.vertexFunction = basicVert
+		desc.vertexFunction = basicVert!
 		desc.fragmentFunction = verticalBlurFrag
 		desc.colorAttachments[0].pixelFormat = .BGRA8Unorm
-		verticallBlurPipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc, error: &pipelineError)
-		if !(verticallBlurPipeline != nil) {
-			println("Failed to create pipeline state, error \(pipelineError)")
+		do {
+			try verticallBlurPipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc)
+		} catch _ {
+			// TODO: Do more here.
+			print("Failed to create pipeline state")
 		}
 		
 		desc.label = "Upsample"
-		desc.vertexFunction = basicVert
+		desc.vertexFunction = basicVert!
 		desc.fragmentFunction = basicFrag
 		desc.colorAttachments[0].pixelFormat = .BGRA8Unorm
-		upsamplePipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc, error: &pipelineError)
-		if !(upsamplePipeline != nil) {
-			println("Failed to create pipeline state, error \(pipelineError)")
+		do {
+			try upsamplePipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc)
+		} catch _ {
+			// TODO: Do more here.
+			print("Failed to create pipeline state")
 		}
 		
 		desc.label = "Composite"
-		desc.vertexFunction = compositeVert
+		desc.vertexFunction = compositeVert!
 		desc.vertexDescriptor = vertexDescriptor
 		desc.fragmentFunction = compositeFrag
 		desc.colorAttachments[0].pixelFormat = .BGRA8Unorm
 		desc.depthAttachmentPixelFormat = MTLPixelFormat.Depth32Float;
-		compositePipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc, error: &pipelineError)
-		if !(compositePipeline != nil) {
-			println("Failed to create pipeline state, error \(pipelineError)")
+		do {
+			try compositePipeline = renderer.device.newRenderPipelineStateWithDescriptor(desc)
+		} catch _ {
+			// TODO: Do more here.
+			print("Failed to create pipeline state")
 		}
 		
-		var depthDesc: MTLDepthStencilDescriptor = MTLDepthStencilDescriptor()
+		let depthDesc: MTLDepthStencilDescriptor = MTLDepthStencilDescriptor()
 		depthDesc.depthCompareFunction = MTLCompareFunction.Less;
 		depthDesc.depthWriteEnabled = true;
 		depthState = rendererDevice.newDepthStencilStateWithDescriptor(depthDesc)
@@ -264,7 +271,7 @@ class MetalDemoView: MetalView {
 	}
 	
 	private func _currentFrameBufferForDrawable(drawable: CAMetalDrawable) -> MTLRenderPassDescriptor {
-		var currentFrameBuffer = MTLRenderPassDescriptor()
+		let currentFrameBuffer = MTLRenderPassDescriptor()
 		
 		currentFrameBuffer.colorAttachments[0].texture = drawable.texture
 		currentFrameBuffer.colorAttachments[0].loadAction = MTLLoadAction.Clear
@@ -281,7 +288,7 @@ class MetalDemoView: MetalView {
 	
 	private func _encodeHorizontalBoxBlurRenderPass(commandBuffer: MTLCommandBuffer, drawable: CAMetalDrawable, uniformsBuffer: MTLBuffer) {
 		
-		var encoder = commandBuffer.renderCommandEncoderWithDescriptor(horizontalBlurBuffer!)!
+		let encoder = commandBuffer.renderCommandEncoderWithDescriptor(horizontalBlurBuffer!)
 		
 		encoder.pushDebugGroup("Horizontal blur render")
 		encoder.setCullMode(MTLCullMode.None)
@@ -310,7 +317,7 @@ class MetalDemoView: MetalView {
 		verticalBlurTexture = textureCache?.textureAtLevel(sampleLevel)
 		verticalBlurBuffer?.colorAttachments[0].texture = textureCache?.textureAtLevel(sampleLevel)
 		
-		var encoder = commandBuffer.renderCommandEncoderWithDescriptor(verticalBlurBuffer!)!
+		let encoder = commandBuffer.renderCommandEncoderWithDescriptor(verticalBlurBuffer!)
 		
 		encoder.pushDebugGroup("Vertical blur render")
 		encoder.setCullMode(MTLCullMode.None)
@@ -336,7 +343,7 @@ class MetalDemoView: MetalView {
 	
 	private func _encodeUpsampleRenderPass(commandBuffer: MTLCommandBuffer, drawable: CAMetalDrawable, uniformsBuffer: MTLBuffer) {
 		
-		var encoder = commandBuffer.renderCommandEncoderWithDescriptor(upsampleBuffer!)!
+		let encoder = commandBuffer.renderCommandEncoderWithDescriptor(upsampleBuffer!)
 		
 		encoder.pushDebugGroup("Upsample render")
 		encoder.setCullMode(MTLCullMode.None)
@@ -364,7 +371,7 @@ class MetalDemoView: MetalView {
 	
 	private func _encodeCompositeRenderPass(commandBuffer: MTLCommandBuffer, drawable: CAMetalDrawable, uniformsBuffer: MTLBuffer) {
 		
-		var encoder = commandBuffer.renderCommandEncoderWithDescriptor(_currentFrameBufferForDrawable(drawable))!
+		let encoder = commandBuffer.renderCommandEncoderWithDescriptor(_currentFrameBufferForDrawable(drawable))
 		
 		encoder.pushDebugGroup("imagePlane render")
 		encoder.setFrontFacingWinding(MTLWinding.CounterClockwise)
@@ -393,7 +400,7 @@ class MetalDemoView: MetalView {
 	------------------------------------------*/
 	
 	func pinchGesture(gesture: UIPinchGestureRecognizer) {
-		var scale: Float = Float(1.0 / gesture.scale)
+		let scale: Float = Float(1.0 / gesture.scale)
 		
 		switch gesture.state
 		{
@@ -407,7 +414,7 @@ class MetalDemoView: MetalView {
 			break
 		}
 		
-		var constrainedZoom = fmaxf(1.0, fminf(100.0, baseZoomFactor * pinchZoomFactor))
+		let constrainedZoom = fmaxf(1.0, fminf(100.0, baseZoomFactor * pinchZoomFactor))
 		pinchZoomFactor = constrainedZoom / baseZoomFactor
 	}
 	
@@ -423,7 +430,7 @@ class MetalDemoView: MetalView {
 	override func configureRenderEncoders(commandBuffer: MTLCommandBuffer, drawable: CAMetalDrawable) {
 		dispatch_semaphore_wait(imagePlane.avaliableResourcesSemaphore, DISPATCH_TIME_FOREVER)
 		
-		var drawableSize = metalLayer.drawableSize
+		let drawableSize = metalLayer.drawableSize
 		if (depthTexture.width != Int(drawableSize.width) || depthTexture.height != Int(drawableSize.height)) {
 			_buildDepthBuffer()
 		}
@@ -436,7 +443,7 @@ class MetalDemoView: MetalView {
 		self._encodeCompositeRenderPass(commandBuffer, drawable: drawable, uniformsBuffer: uniformsBuffer)
 		
 		commandBuffer.addCompletedHandler { (commandBuffer) -> Void in
-			var temp = dispatch_semaphore_signal(self.imagePlane.avaliableResourcesSemaphore)
+			_ = dispatch_semaphore_signal(self.imagePlane.avaliableResourcesSemaphore)
 		}
 	}
 	
@@ -444,9 +451,9 @@ class MetalDemoView: MetalView {
 		let newLevel = textureCache!.levelForNormalizedScale(approxLevel)
 		
 		if (newLevel != sampleLevel) {
-			println("new level: \(newLevel)")
+			print("new level: \(newLevel)")
 		}
 		sampleLevel = newLevel
-		memcpy(downsampleDataBuffer!.contents(), &sampleLevel, UInt(sizeof(Int)))
+		memcpy((downsampleDataBuffer?.contents())!, &sampleLevel, sizeof(Int))
 	}
 }

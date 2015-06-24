@@ -11,14 +11,14 @@ import UIKit
 class Plane: Node {
 	init(device: MTLDevice) {
 		
-		var vertices:Array<Float> = [
+		let vertices:Array<Float> = [
 			-1.0, -1.0,  0.0, 1.0,  0.0,  0.0,  1.0, 0.0, 0.0, 1.0,
 			1.0, -1.0,  0.0, 1.0,  0.0,  0.0,  1.0, 0.0, 1.0, 1.0,
 			1.0,  1.0,  0.0, 1.0,  0.0,  0.0,  1.0, 0.0, 1.0, 0.0,
 			-1.0,  1.0,  0.0, 1.0,  0.0,  0.0,  1.0, 0.0, 0.0, 0.0
 		]
 		
-		var indices:Array<Int16> = [
+		let indices:Array<Int16> = [
 			3, 1, 2, 0, 1, 3
 		]
 		

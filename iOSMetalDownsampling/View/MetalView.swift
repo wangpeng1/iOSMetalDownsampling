@@ -18,7 +18,7 @@ class MetalView: UIView, RendererDelegate {
 	var timer: CADisplayLink = CADisplayLink()
 	var metalLayer: CAMetalLayer {
 		get {
-			return self.layer as CAMetalLayer
+			return self.layer as! CAMetalLayer
 		}
 	}
 	

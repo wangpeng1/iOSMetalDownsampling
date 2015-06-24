@@ -259,7 +259,8 @@
 		AD331F5A1B114C2F003E58D4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Bradley Griffith";
 				TargetAttributes = {
 					AD331F611B114C2F003E58D4 = {
@@ -393,6 +394,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -459,6 +461,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = iOSMetalDownsampling/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Bradley-Griffith.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSMetalDownsampling/iOSMetalDownsampling-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -472,6 +475,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = iOSMetalDownsampling/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Bradley-Griffith.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSMetalDownsampling/iOSMetalDownsampling-Bridging-Header.h";
 			};
@@ -491,6 +495,7 @@
 				);
 				INFOPLIST_FILE = iOSMetalDownsamplingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Bradley-Griffith.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOSMetalDownsampling.app/iOSMetalDownsampling";
 			};
@@ -506,6 +511,7 @@
 				);
 				INFOPLIST_FILE = iOSMetalDownsamplingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Bradley-Griffith.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOSMetalDownsampling.app/iOSMetalDownsampling";
 			};
@@ -530,6 +536,7 @@
 				AD331F861B114C2F003E58D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AD331F871B114C2F003E58D4 /* Build configuration list for PBXNativeTarget "iOSMetalDownsamplingTests" */ = {
 			isa = XCConfigurationList;
@@ -538,6 +545,7 @@
 				AD331F891B114C2F003E58D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

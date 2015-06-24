@@ -72,7 +72,7 @@ class Renderer: NSObject {
 	------------------------------------------*/
 	
 	func draw() {
-		var ratio: Float = Float(layer.bounds.size.width) / Float(layer.bounds.size.height)
+		let ratio: Float = Float(layer.bounds.size.width) / Float(layer.bounds.size.height)
 		if (ratio != layerAspectRatio) {
 			_setProjectionMatrix()
 		}
@@ -81,14 +81,15 @@ class Renderer: NSObject {
 		
 		// Get commandBuffer from queue, request descriptor for this object from delegate, and encode.
 		let commandBuffer = commandQueue.commandBuffer()
-		var drawable = layer.nextDrawable()
-		
-		if let configDelegate = delegate {
-			configDelegate.configureCommandBufferForRenderer(self, commandBuffer: commandBuffer, drawable: drawable)
+		if let drawable = layer.nextDrawable() {
+			
+			if let configDelegate = delegate {
+				configDelegate.configureCommandBufferForRenderer(self, commandBuffer: commandBuffer, drawable: drawable)
+			}
+			
+			// Teardown and Commit
+			commandBuffer.presentDrawable(drawable)
 		}
-		
-		// Teardown and Commit
-		commandBuffer.presentDrawable(drawable)
 		commandBuffer.commit()
 	}
 }

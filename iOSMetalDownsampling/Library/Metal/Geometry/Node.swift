@@ -51,14 +51,14 @@ class Node: NSObject {
 		name = givenName
 		device = rendererDevice
 		
-		vertexBuffer = device.newBufferWithBytes(vertices, length: 24 * sizeof(MMVertices), options: nil)
-		indexBuffer = device.newBufferWithBytes(indices, length: indices.count * sizeof(MMIndexType), options: nil)
+		vertexBuffer = device.newBufferWithBytes(vertices, length: 24 * sizeof(MMVertices), options: MTLResourceOptions.OptionCPUCacheModeDefault)
+		indexBuffer = device.newBufferWithBytes(indices, length: 24, options: MTLResourceOptions.OptionCPUCacheModeDefault)
 		
 		self._createBufferPool()
 	}
 	
 	deinit{
-		for i in 0...self.inflightBuffersCount{
+		for _ in 0...self.inflightBuffersCount{
 			dispatch_semaphore_signal(self.avaliableResourcesSemaphore)
 		}
 	}
@@ -70,14 +70,14 @@ class Node: NSObject {
 	private func _createBufferPool() {
 		uniformsBuffers = [MTLBuffer]()
 		
-		for i in 0...inflightBuffersCount - 1 {
-			var uniformsBuffer = device.newBufferWithLength(sizeof(MMUniforms), options: MTLResourceOptions.OptionCPUCacheModeDefault)
+		for _ in 0...inflightBuffersCount - 1 {
+			let uniformsBuffer = device.newBufferWithLength(sizeof(MMUniforms), options: MTLResourceOptions.OptionCPUCacheModeDefault)
 			uniformsBuffers.append(uniformsBuffer)
 		}
 	}
 	
 	private func _nextUniformsBuffer() -> MTLBuffer {
-		var buffer = uniformsBuffers[avaliableBufferIndex]
+		let buffer = uniformsBuffers[avaliableBufferIndex]
 		
 		avaliableBufferIndex++
 		
@@ -93,14 +93,14 @@ class Node: NSObject {
 	------------------------------------------*/
 	
 	func adjustUniformsForSceneUsingWorldMatrix(worldModelMatrix: Matrix4, projectionMatrix: Matrix4) -> MTLBuffer {
-		var uniformsBuffer = _nextUniformsBuffer()
+		let uniformsBuffer = _nextUniformsBuffer()
 		
-		var xRotation: Matrix4 = Matrix4.matrixFromAxisRotation(1, y:0, z:0, angle:self.rotationX)
-		var yRotation: Matrix4 = Matrix4.matrixFromAxisRotation(0, y:1, z:0, angle:self.rotationY)
-		var zRotation: Matrix4 = Matrix4.matrixFromAxisRotation(0, y:0, z:1, angle:self.rotationZ)
-		var rotation: Matrix4 = Matrix4.multiplyMatrix(xRotation, byMatrix: Matrix4.multiplyMatrix(yRotation, byMatrix: zRotation))
-		var translation: Matrix4 = Matrix4.matrixFromTranslation(positionX, y:positionY, z:positionZ)
-		var cubeModelMatrix: Matrix4 = Matrix4.scaleMatrix(Matrix4.multiplyMatrix(translation, byMatrix: rotation), x: scaleX, y: scaleY, z: scaleZ)
+		let xRotation: Matrix4 = Matrix4.matrixFromAxisRotation(1, y:0, z:0, angle:self.rotationX)
+		let yRotation: Matrix4 = Matrix4.matrixFromAxisRotation(0, y:1, z:0, angle:self.rotationY)
+		let zRotation: Matrix4 = Matrix4.matrixFromAxisRotation(0, y:0, z:1, angle:self.rotationZ)
+		let rotation: Matrix4 = Matrix4.multiplyMatrix(xRotation, byMatrix: Matrix4.multiplyMatrix(yRotation, byMatrix: zRotation))
+		let translation: Matrix4 = Matrix4.matrixFromTranslation(positionX, y:positionY, z:positionZ)
+		let cubeModelMatrix: Matrix4 = Matrix4.scaleMatrix(Matrix4.multiplyMatrix(translation, byMatrix: rotation), x: scaleX, y: scaleY, z: scaleZ)
 		
 		var uniforms: MMUniforms = MMUniforms(
 			modelMatrix: cubeModelMatrix.cMatrix(),
@@ -108,7 +108,7 @@ class Node: NSObject {
 			modelViewProjectionMatrix: Matrix4.multiplyMatrix(projectionMatrix, byMatrix: Matrix4.multiplyMatrix(worldModelMatrix, byMatrix:cubeModelMatrix)).cMatrix()
 		)
 		
-		memcpy(uniformsBuffer.contents(), &uniforms, UInt(sizeof(MMUniforms)))
+		memcpy((uniformsBuffer.contents()), &uniforms, sizeof(MMUniforms))
 		
 		return uniformsBuffer
 	}

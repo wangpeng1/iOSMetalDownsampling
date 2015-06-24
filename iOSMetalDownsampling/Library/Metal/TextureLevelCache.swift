@@ -42,7 +42,7 @@ class TextureLevelCache: NSObject {
 	}
 	
 	func levelForNormalizedScale(scale: Float) -> Int {
-		var adjustedScale = min(1, scale)
+		let adjustedScale = min(1, scale)
 		return Int(round(adjustedScale * Float(totalLevels - 1)))
 	}
 	
@@ -56,10 +56,10 @@ class TextureLevelCache: NSObject {
 		let format = MTLPixelFormat.BGRA8Unorm
 		
 		for var index = 0; index < totalLevels; ++index {
-			var scaledWidth = self._scaled(self.texture.width, forLevel:index)
-			var scaledHeight = self._scaled(self.texture.height, forLevel:index)
-			var desc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(format, width: Int(scaledWidth), height: Int(scaledHeight), mipmapped: false)
-			var texture = device.newTextureWithDescriptor(desc)
+			let scaledWidth = self._scaled(self.texture.width, forLevel:index)
+			let scaledHeight = self._scaled(self.texture.height, forLevel:index)
+			let desc = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(format, width: Int(scaledWidth), height: Int(scaledHeight), mipmapped: false)
+			let texture = device.newTextureWithDescriptor(desc)
 			
 			textureCache?.append(texture)
 		}
